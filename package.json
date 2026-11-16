@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "DECISION MATRIX – AI-Powered Decision Intelligence System",
   "main": "backend/server.js",
+  "engines": {
+    "node": ">=20.18.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "start": "node backend/server.js",
     "server": "node backend/server.js",
