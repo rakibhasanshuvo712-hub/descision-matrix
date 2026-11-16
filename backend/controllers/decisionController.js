@@ -157,6 +157,7 @@ const createDecision = async (req, res, next) => {
         };
 
         fallbackDecisions.set(id, fallbackDoc);
+        req.app.locals.persistStore?.();
 
         return res.status(201).json({
           success: true,
@@ -350,6 +351,7 @@ const reevaluateDecision = async (req, res, next) => {
       await decision.save();
     } else {
       req.app.locals.fallbackDecisions.set(id, decision);
+      req.app.locals.persistStore?.();
     }
 
     return res.json({
@@ -383,6 +385,7 @@ const deleteDecision = async (req, res, next) => {
 
     if (req.app.locals.fallbackDecisions?.has(id)) {
       req.app.locals.fallbackDecisions.delete(id);
+      req.app.locals.persistStore?.();
       return res.json({
         success: true,
         message: 'Decision deleted successfully.',

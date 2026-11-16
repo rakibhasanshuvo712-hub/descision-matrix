@@ -149,6 +149,14 @@ const EvaluationResultsPage = () => {
 
         {/* Action Controls (Hidden in Print) */}
         <div className="flex flex-wrap items-center gap-2 no-print shrink-0">
+          <Link
+            to={`/decisions/${id}/compare`}
+            className="btn btn-outline btn-accent btn-sm rounded-xl gap-1.5 text-xs font-semibold"
+          >
+            <TbScale className="w-3.5 h-3.5" />
+            <span>Compare Options</span>
+          </Link>
+
           <button
             onClick={() => setShowWeightAdjuster((prev) => !prev)}
             className="btn btn-outline btn-sm rounded-xl gap-1.5 border-base-content/20 text-xs font-semibold"

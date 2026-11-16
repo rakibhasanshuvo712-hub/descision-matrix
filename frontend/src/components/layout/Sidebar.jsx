@@ -11,7 +11,7 @@ import {
   FiCpu,
   FiCompass,
 } from 'react-icons/fi';
-import { TbGridDots } from 'react-icons/tb';
+import { TbGridDots, TbScale } from 'react-icons/tb';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { isGuest, isAuthenticated } = useAuth();
@@ -19,6 +19,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const navLinks = [
     { to: '/dashboard', label: 'Dashboard', icon: FiHome },
     { to: '/decisions/new', label: 'Create Decision', icon: FiPlusCircle, highlight: true },
+    { to: '/compare', label: 'Compare Options', icon: TbScale },
     { to: '/history', label: 'Decision History', icon: FiClock },
     { to: '/profile', label: 'Profile & Priorities', icon: FiUser },
     { to: '/settings', label: 'AI & System Config', icon: FiSettings },

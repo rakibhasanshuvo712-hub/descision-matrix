@@ -79,6 +79,7 @@ const register = async (req, res, next) => {
           preferences: { theme: 'dark', defaultWeights: {} },
         };
         fallbackUsers.set(id, fallbackUser);
+        req.app.locals.persistStore?.();
 
         const token = generateToken(fallbackUser);
         return res.status(201).json({

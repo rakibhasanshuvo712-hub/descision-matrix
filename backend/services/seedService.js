@@ -89,6 +89,10 @@ const SAMPLE_DECISIONS = [
 async function seedInitialDecisions(appLocals = {}) {
   const populateMemory = () => {
     if (appLocals && appLocals.fallbackDecisions) {
+      if (appLocals.fallbackDecisions.size > 0) {
+        console.log(`[Seed Service] Retaining ${appLocals.fallbackDecisions.size} existing decisions from persistent store.`);
+        return;
+      }
       SAMPLE_DECISIONS.forEach((sample, idx) => {
         const aiResult = AIService.evaluateWithCognitiveEngine(sample, sample.customWeights);
         const scored = ScoringService.processRankings(aiResult.optionsAnalysis, sample.customWeights);

@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 // Load environment variables
 dotenv.config();
 
-const { connectDB, getDbStatus } = require('./config/db');
+const { connectDB, getDbStatus, loadFileStore, saveFileStore } = require('./config/db');
 const { seedInitialDecisions } = require('./services/seedService');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -17,9 +17,13 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
-// Initialize in-memory fallback stores
-app.locals.fallbackUsers = new Map();
-app.locals.fallbackDecisions = new Map();
+// Initialize in-memory / persistent fallback stores
+const initialStores = loadFileStore();
+app.locals.fallbackUsers = initialStores.users;
+app.locals.fallbackDecisions = initialStores.decisions;
+app.locals.persistStore = () => {
+  saveFileStore(app.locals.fallbackUsers, app.locals.fallbackDecisions);
+};
 
 // Middleware
 app.use(
@@ -31,13 +35,23 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Request Logger in dev
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res, next) => {
-    console.log(`[REQ] ${req.method} ${req.url}`);
-    next();
-  });
-}
+// Static frontend path
+const frontendDist = path.join(__dirname, '../frontend/dist');
+
+// Serve static assets with high-performance HTTP caching (immutable hashed assets)
+app.use(
+  '/assets',
+  express.static(path.join(frontendDist, 'assets'), {
+    maxAge: '1y',
+    immutable: true,
+  })
+);
+
+app.use(
+  express.static(frontendDist, {
+    maxAge: '1h',
+  })
+);
 
 // Health Check Endpoints (Required for Railway / Docker / Kubernetes)
 app.get(['/health', '/api/health'], (req, res) => {
@@ -59,10 +73,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/decisions', decisionRoutes);
 app.use('/api/users', userRoutes);
 
-// Production Static Frontend Serving
-const frontendDist = path.join(__dirname, '../frontend/dist');
-app.use(express.static(frontendDist));
-
 // Catch-all route to serve Frontend SPA index.html
 app.use((req, res, next) => {
   // If request is for an unhandled /api/* route, return 404 JSON
@@ -71,6 +81,7 @@ app.use((req, res, next) => {
   }
 
   const indexPath = path.join(frontendDist, 'index.html');
+  res.setHeader('Cache-Control', 'no-cache');
   res.sendFile(indexPath, (err) => {
     if (err) {
       // If frontend dist not yet built
@@ -81,7 +92,7 @@ app.use((req, res, next) => {
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; background: #0b0f19; color: #f8fafc; line-height: 1.6;">
             <div style="max-width: 600px; margin: 0 auto; background: #131b2e; padding: 32px; border-radius: 12px; border: 1px solid #1e293b;">
               <h1 style="color: #38bdf8; margin-top: 0;">⚡ DECISION MATRIX API</h1>
-              <p>Decision Intelligence Backend is active and running on port <strong>${PORT}</strong>.</p>
+              <p>Decision Intelligence Backend is active and running on port <strong>${process.env.PORT || 5000}</strong>.</p>
               <p>Endpoints:</p>
               <ul>
                 <li><a href="/api/health" style="color: #60a5fa;">/api/health</a> - System Health & AI Status</li>
