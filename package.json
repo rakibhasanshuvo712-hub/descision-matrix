@@ -1,0 +1,26 @@
+{
+  "name": "decision-matrix",
+  "version": "1.0.0",
+  "description": "DECISION MATRIX – AI-Powered Decision Intelligence System",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "node backend/server.js",
+    "client": "npm run dev --prefix frontend",
+    "build": "cd frontend && npm install && npm run build",
+    "build:backend": "cd backend && npm install",
+    "build:all": "npm run build:backend && npm run build",
+    "postinstall": "npm run build:all"
+  },
+  "keywords": [
+    "decision-matrix",
+    "decision-intelligence",
+    "ai",
+    "multi-criteria",
+    "ethics",
+    "logic",
+    "fullstack"
+  ],
+  "author": "DECISION MATRIX Team",
+  "license": "MIT"
+}

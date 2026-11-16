@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply min-h-screen bg-base-100 text-base-content antialiased font-sans selection:bg-primary/20 selection:text-primary;
+  }
+}
+
+/* Custom modern aesthetic touches */
+.glass-panel {
+  @apply bg-base-200/70 backdrop-blur-md border border-base-content/10 shadow-lg rounded-2xl;
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400;
+}
+
+.glow-cyan {
+  box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.25);
+}
+
+/* Print optimization for PDF reports */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
